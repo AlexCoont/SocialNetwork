@@ -1,0 +1,63 @@
+Configuration:
+  status: Info
+
+  Properties:
+    Property:
+      name: log-path
+      value: "log"
+
+  appenders:
+    Console:
+      name: LogToConsole
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%highlight{%d [%t] %-5level: %msg%n%throwable}{FATAL=white, ERROR=red, WARN=blue, INFO=black, DEBUG=green, TRACE=blue}"
+
+    RollingFile:
+    - name: InfoAppender
+      filename: logs/info.txt
+      filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.txt"
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 10MB
+      DefaultRollOverStrategy:
+        max: 10
+    - name: ErrorAppender
+      filename: logs/error.txt
+      filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.txt"
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 10MB
+      DefaultRollOverStrategy:
+        max: 10
+    - name: WarnAppender
+      filename: logs/warn.txt
+      filePattern: "logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.txt"
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 10MB
+      DefaultRollOverStrategy:
+        max: 10
+
+  Loggers:
+    logger:
+      - name: default
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: InfoAppender
+          - ref: ErrorAppender
+            level: error
+          - ref: WarnAppender
+            level: warn
+
+    Root:
+      level: info
+      AppenderRef:
+        - ref: LogToConsole
